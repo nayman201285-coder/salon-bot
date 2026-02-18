@@ -1899,8 +1899,13 @@ async def handle_webhook(request):
     """Принимает POST от Telegram и передает в диспетчер"""
     print("🔥 Получен запрос на webhook!")
     update = await request.json()
-    # Передаем update боту для обработки
+    
+    # Преобразуем JSON в объект Update для aiogram
+    update = types.Update(**update)
+    
+    # Передаем обновление диспетчеру для обработки
     await dp.process_update(update)
+    
     return web.Response(text="OK")
 
 async def on_startup(app):
