@@ -17,7 +17,7 @@ from database import Database
 
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_ID = int(os.getenv("ADMIN_ID", "926112462"))
+ADMIN_ID = 926112462  # Твой ID напрямую, без os.getenv
 
 logging.basicConfig(level=logging.INFO)
 
