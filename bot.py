@@ -1915,20 +1915,40 @@ def single_instance():
     except:
         print("❌ Бот уже запущен!")
         sys.exit(1)
-# ==================== ЗАПУСК ====================
-import os
-import sys
-import time
+# ==================== ЗАПУСК WEBHOOK ====================
+
+WEBHOOK_HOST = 'https://salon-bot-13xy.onrender.com'  # Твой URL на Render
+WEBHOOK_PATH = '/webhook'
+WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
+
+WEBAPP_HOST = '0.0.0.0'
+WEBAPP_PORT = int(os.environ.get('PORT', 10000))
+
+async def on_startup(dp):
+    """Действия при запуске"""
+    await bot.set_webhook(WEBHOOK_URL)
+    print("✅ Вебхук установлен")
+    print(f"🌍 URL: {WEBHOOK_URL}")
+
+async def on_shutdown(dp):
+    """Действия при остановке"""
+    await bot.delete_webhook()
+    print("❌ Вебхук удален")
 
 if __name__ == "__main__":
     print("=" * 50)
-    print("✅ БОТ ДЛЯ САЛОНА КРАСОТЫ 'ПРЕОБРАЖЕНИЕ' ЗАПУСКАЕТСЯ!")
+    print("✅ БОТ ЗАПУСКАЕТСЯ НА WEBHOOK!")
     print("=" * 50)
-    print(f"👑 Админ ID: {ADMIN_ID}")
+    print(f"🌍 WEBHOOK URL: {WEBHOOK_URL}")
+    print(f"🚀 PORT: {WEBAPP_PORT}")
     print("=" * 50)
-
-    # Небольшая задержка перед запуском
-    time.sleep(2)
-
-    # Запуск бота
-    executor.start_polling(dp, skip_updates=True, timeout=30)
+    
+    start_webhook(
+        dispatcher=dp,
+        webhook_path=WEBHOOK_PATH,
+        on_startup=on_startup,
+        on_shutdown=on_shutdown,
+        skip_updates=True,
+        host=WEBAPP_HOST,
+        port=WEBAPP_PORT,
+    )
