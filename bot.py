@@ -1902,17 +1902,31 @@ http_thread = threading.Thread(target=run_http_server, daemon=True)
 http_thread.start()
 
 # ==================== ЗАПУСК ====================
+import fcntl
+import sys
+
+def single_instance():
+    """Проверяет, не запущен ли уже бот"""
+    lock_file = '/tmp/bot.lock'
+    try:
+        fh = open(lock_file, 'w')
+        fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        return True
+    except:
+        print("❌ Бот уже запущен!")
+        sys.exit(1)
 
 if __name__ == "__main__":
+    # Проверяем, не запущен ли уже бот
+    try:
+        single_instance()
+    except:
+        pass  # Если блокировка не работает на Render, пропускаем
+    
     print("=" * 50)
     print("✅ БОТ ДЛЯ САЛОНА КРАСОТЫ 'ПРЕОБРАЖЕНИЕ' ЗАПУСКАЕТСЯ!")
     print("=" * 50)
     print(f"👑 Админ ID: {ADMIN_ID}")
-    print(f"🌍 Языки: Русский, English, Қазақша")
-    print(f"📍 Добавлен раздел с адресом")
-    print(f"📊 Полная статистика за 2 месяца")
-    print(f"📝 Улучшенная система заметок")
-    print(f"📝 Ручное добавление записей")
     print("=" * 50)
     
     # Небольшая задержка перед запуском
