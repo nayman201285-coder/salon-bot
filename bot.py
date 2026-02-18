@@ -1875,27 +1875,7 @@ async def handle_unknown(message: types.Message):
         reply_markup=get_main_menu('ru')
     )
 
-# ==================== ПРОСТОЙ HTTP-СЕРВЕР ДЛЯ RENDER ====================
-# Этот сервер нужен только для того, чтобы Render видел открытый порт
-# Он не влияет на работу бота
 
-class HealthCheckHandler(http.server.SimpleHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-        self.wfile.write(b"Bot is running!")
-    
-    def log_message(self, format, *args):
-        # Отключаем логи HTTP-сервера, чтобы не засорять консоль
-        pass
-
-def run_http_server():
-    PORT = int(os.environ.get('PORT', 10000))
-    handler = HealthCheckHandler
-    with socketserver.TCPServer(("", PORT), handler) as httpd:
-        print(f"✅ HTTP-сервер запущен на порту {PORT} (для Render)")
-        httpd.serve_forever()
 
 # Запускаем HTTP-сервер в отдельном потоке
 http_thread = threading.Thread(target=run_http_server, daemon=True)
