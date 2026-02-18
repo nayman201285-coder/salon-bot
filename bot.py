@@ -1921,25 +1921,14 @@ import sys
 import time
 
 if __name__ == "__main__":
-    # Проверяем, не запущен ли уже бот через переменную окружения
-    # Render может запускать несколько процессов, используем IS_RENDER_WORKER
-    if os.environ.get('IS_RENDER_WORKER') == 'true':
-        print("👋 Это воркер Render, пропускаем запуск бота")
-        sys.exit(0)
-    
     print("=" * 50)
     print("✅ БОТ ДЛЯ САЛОНА КРАСОТЫ 'ПРЕОБРАЖЕНИЕ' ЗАПУСКАЕТСЯ!")
     print("=" * 50)
     print(f"👑 Админ ID: {ADMIN_ID}")
-    print(f"🌍 Языки: Русский, English, Қазақша")
-    print(f"📍 Добавлен раздел с адресом")
-    print(f"📊 Полная статистика за 2 месяца")
-    print(f"📝 Улучшенная система заметок")
-    print(f"📝 Ручное добавление записей")
     print("=" * 50)
-    
+
     # Небольшая задержка перед запуском
     time.sleep(2)
-    
+
     # Запуск бота
     executor.start_polling(dp, skip_updates=True, timeout=30)
