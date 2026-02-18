@@ -1894,19 +1894,25 @@ WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 WEBAPP_HOST = '0.0.0.0'
 WEBAPP_PORT = int(os.environ.get('PORT', 10000))
 
-# Простой обработчик для проверки
+# Обработчик для вебхука от Telegram
 async def handle_webhook(request):
-    """Просто возвращает OK для проверки"""
+    """Принимает POST от Telegram и передает в диспетчер"""
     print("🔥 Получен запрос на webhook!")
+    update = await request.json()
+    # Передаем update боту для обработки
+    await dp.process_update(update)
     return web.Response(text="OK")
 
-async def on_startup(dp):
+async def on_startup(app):
+    """Действия при запуске приложения"""
     await bot.set_webhook(WEBHOOK_URL)
     print("✅ Вебхук установлен")
 
-async def on_shutdown(dp):
+async def on_shutdown(app):
+    """Действия при остановке приложения"""
     await bot.delete_webhook()
     print("❌ Вебхук удален")
+    await bot.session.close()
 
 if __name__ == "__main__":
     print("=" * 50)
@@ -1917,7 +1923,13 @@ if __name__ == "__main__":
     
     # Создаем приложение aiohttp
     app = web.Application()
+    
+    # Добавляем обработчик POST запросов на вебхук
     app.router.add_post(WEBHOOK_PATH, handle_webhook)
     
-    # Запускаем
+    # Регистрируем функции запуска и остановки
+    app.on_startup.append(on_startup)
+    app.on_shutdown.append(on_shutdown)
+    
+    # Запускаем приложение
     web.run_app(app, host=WEBAPP_HOST, port=WEBAPP_PORT)
