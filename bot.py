@@ -2,9 +2,6 @@ import os
 import asyncio
 import logging
 import time
-import http.server
-import socketserver
-import threading
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types
@@ -1897,7 +1894,7 @@ def single_instance():
         sys.exit(1)
 # ==================== ЗАПУСК WEBHOOK ====================
 
-WEBHOOK_HOST = 'https://salon-bot-13xy.onrender.com'  # Твой URL на Render
+WEBHOOK_HOST = 'https://salon-bot-13xy.onrender.com'
 WEBHOOK_PATH = '/webhook'
 WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 
@@ -1905,13 +1902,10 @@ WEBAPP_HOST = '0.0.0.0'
 WEBAPP_PORT = int(os.environ.get('PORT', 10000))
 
 async def on_startup(dp):
-    """Действия при запуске"""
     await bot.set_webhook(WEBHOOK_URL)
     print("✅ Вебхук установлен")
-    print(f"🌍 URL: {WEBHOOK_URL}")
 
 async def on_shutdown(dp):
-    """Действия при остановке"""
     await bot.delete_webhook()
     print("❌ Вебхук удален")
 
@@ -1920,7 +1914,6 @@ if __name__ == "__main__":
     print("✅ БОТ ЗАПУСКАЕТСЯ НА WEBHOOK!")
     print("=" * 50)
     print(f"🌍 WEBHOOK URL: {WEBHOOK_URL}")
-    print(f"🚀 PORT: {WEBAPP_PORT}")
     print("=" * 50)
     
     start_webhook(
