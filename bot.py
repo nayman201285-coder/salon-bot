@@ -1,6 +1,7 @@
 import os
 import asyncio
 import logging
+import time
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types
@@ -13,7 +14,7 @@ from database import Database
 
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_ID = 926112462  # Твой ID
+ADMIN_ID = int(os.getenv("ADMIN_ID", "926112462"))
 
 logging.basicConfig(level=logging.INFO)
 
@@ -491,7 +492,7 @@ def get_manual_services_keyboard(master_id, lang='ru'):
 def get_manual_dates_keyboard(lang='ru'):
     """Клавиатура для ручной записи - выбор даты"""
     keyboard = InlineKeyboardMarkup(row_width=2)
-    for i in range(14):  # Показываем 14 дней для ручной записи
+    for i in range(14):
         date = datetime.now() + timedelta(days=i)
         date_str = date.strftime("%d.%m.%Y")
         day_name = date.strftime("%A")
@@ -1750,8 +1751,6 @@ async def admin_manual_date(callback: types.CallbackQuery, state: FSMContext):
 async def admin_manual_time(callback: types.CallbackQuery, state: FSMContext):
     """Выбор времени"""
     time = callback.data.replace("manual_time_", "")
-    await state.update_data(manual_time=time)
-    
     data = await state.get_data()
     master = db.get_master(data['manual_master_id'], 'ru')
     service = db.get_service(data['manual_service_id'], 'ru')
@@ -1780,7 +1779,7 @@ async def admin_manual_confirm(callback: types.CallbackQuery, state: FSMContext)
     data = await state.get_data()
     
     appointment_id = db.create_appointment(
-        user_id=ADMIN_ID,  # Запись создана админом
+        user_id=ADMIN_ID,
         user_name=data['client_name'],
         user_phone=data['client_phone'],
         master_id=data['manual_master_id'],
@@ -1877,9 +1876,8 @@ async def handle_unknown(message: types.Message):
 
 if __name__ == "__main__":
     print("=" * 50)
-    print("✅ БОТ ДЛЯ САЛОНА КРАСОТЫ 'ПРЕОБРАЖЕНИЕ' ЗАПУЩЕН!")
+    print("✅ БОТ ДЛЯ САЛОНА КРАСОТЫ 'ПРЕОБРАЖЕНИЕ' ЗАПУСКАЕТСЯ!")
     print("=" * 50)
-    print(f"📱 Бот запущен и готов к работе")
     print(f"👑 Админ ID: {ADMIN_ID}")
     print(f"🌍 Языки: Русский, English, Қазақша")
     print(f"📍 Добавлен раздел с адресом")
@@ -1888,4 +1886,8 @@ if __name__ == "__main__":
     print(f"📝 Ручное добавление записей")
     print("=" * 50)
     
-    executor.start_polling(dp, skip_updates=True)
+    # Небольшая задержка перед запуском
+    time.sleep(2)
+    
+    # Запуск бота
+    executor.start_polling(dp, skip_updates=True, timeout=30)
