@@ -1908,10 +1908,15 @@ async def handle_webhook(request):
     
     return web.Response(text="OK")
 
-async def on_startup(app):
+aasync def on_startup(app):
     """Действия при запуске приложения"""
+    # Получаем информацию о боте (чтобы он узнал своё имя)
+    bot_info = await bot.get_me()
+    print(f"✅ Бот запущен: @{bot_info.username}")
+    
+    # Устанавливаем вебхук
     await bot.set_webhook(WEBHOOK_URL)
-    print("✅ Вебхук установлен")
+    print(f"✅ Вебхук установлен на {WEBHOOK_URL}")
 
 async def on_shutdown(app):
     """Действия при остановке приложения"""
