@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: salon-bot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    envVars:
+      - key: BOT_TOKEN
+        value: "8242692690:AAExQ8RcUrSprRLX4-QCQAQxxTSiXaxNxP4"
+      - key: ADMIN_ID
+        value: "926112462"
