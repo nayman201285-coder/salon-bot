@@ -1937,7 +1937,7 @@ if __name__ == "__main__":
     
     # Регистрируем функции запуска и остановки
     app.on_startup.append(on_startup)
-    app.on_shutdown.append(on_shutdown)
+    app.on_shutdown.append(on_shutdown)  # ← ЭТА СТРОКА ДОЛЖНА БЫТЬ
     
     # Запускаем приложение
     web.run_app(app, host=WEBAPP_HOST, port=WEBAPP_PORT)
