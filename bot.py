@@ -1870,13 +1870,6 @@ async def handle_unknown(message: types.Message):
         "Используй кнопки меню ниже 👇",
         reply_markup=get_main_menu('ru')
     )
-
-
-
-# Запускаем HTTP-сервер в отдельном потоке
-http_thread = threading.Thread(target=run_http_server, daemon=True)
-http_thread.start()
-
 # ==================== ЗАПУСК ====================
 import fcntl
 import sys
